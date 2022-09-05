@@ -11,18 +11,12 @@ use crate::angle::Angle;
 pub type Distance = f64;
 
 /// Location on the plan (x, y)
+#[derive(Clone, Copy)]
 pub struct Pos<T: Sized + Add + Mul + Div + Sub>(T, T);
-
-impl Into<u8> for Pos<u8> {
-    fn into(self) -> u8 {
-        self.0 as u8
-    }
-}
 
 /// Macro to implement a type for the Pos struct
 macro_rules! pos_impl {
     ($t: ty) => {
-        /// Get struct from type $t
         impl From<($t, $t)> for Pos<$t> {
             fn from(tuple: ($t, $t)) -> Self {
                 Self(
@@ -32,7 +26,12 @@ macro_rules! pos_impl {
             }
         }
 
-        /// Convert into type $t
+        impl Default for Pos<$t> {
+            fn default() -> Self {
+                Self(0 as $t, 0 as $t)
+            }
+        }
+
         impl Into<($t, $t)> for Pos<$t> {
             fn into(self) -> ($t, $t) {
                 (
@@ -44,10 +43,13 @@ macro_rules! pos_impl {
 
         impl Pos<$t> {
             /// Return another Pos depending of an angle and a Pos
+            /// 
             /// `t` is the heading angle
+            /// 
             /// `a` is the turn angle
+            /// 
             /// `d` is the distance
-            pub fn next_pos(&self, t: Angle, a: Angle, d: Distance) -> Pos<$t> {
+            pub fn next_pos_turn(&self, t: Angle, a: Angle, d: Distance) -> Pos<$t> {
                 let (x0, y0) = (self.0, self.1);
                 let direction = (a.degrees() + t.degrees());
         

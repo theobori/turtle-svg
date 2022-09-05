@@ -1,4 +1,5 @@
 /// The unique Color model for this crate
+#[derive(Clone, Copy)]
 pub struct Color {
     /// Red
     pub r: u8,
@@ -17,7 +18,9 @@ pub enum ColorPre {
     Blue,
     Black,
     White,
-    Grey
+    Grey,
+    Default,
+    None
 }
 
 /// Convert a pre-defined color into Color
@@ -30,28 +33,29 @@ impl Into<Color> for ColorPre {
             ColorPre::Black => Color::from((0, 0, 0, 255)),
             ColorPre::White => Color::from((255, 255, 255, 255)),
             ColorPre::Grey => Color::from((127, 127, 127, 255)),
+            ColorPre::Default => Color::from((0, 0, 0, 255)),
+            ColorPre::None => Color::from((0, 0, 0, 0)),
         }
     }
 }
 
 /// SVG color format
-type ColorSvg = String;
+pub type ColorSvg = String;
 
-/// Convert tuples of u8 into Color
+impl Default for Color {
+    fn default() -> Self {
+        ColorPre::Default.into()
+    }
+}
+
 impl From<(u8, u8, u8, u8)> for Color {
     fn from(color: (u8, u8, u8, u8)) -> Self {
         let (r, g, b, a) = color;
 
-        Self {
-            r,
-            g,
-            b,
-            a
-        }
+        Self { r, g, b, a }
     }
 }
 
-/// Convert Color into ColorSVG
 impl Into<ColorSvg> for Color {
     fn into(self) -> ColorSvg {
         let alpha = (self.a / 255) as f64;

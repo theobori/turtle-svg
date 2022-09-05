@@ -1,30 +1,36 @@
 use crate::models::range_model::Range;
 
-/// Angle type
-pub struct Angle {
-    /// In degrees by default
-    pub value: f64
-}
+/// Angle type, in degrees by default
+#[derive(Clone, Copy)]
+pub struct Angle(pub f64);
 
 impl Angle {
-    /// Set `value` with a value in degrees
+    fn set(&mut self, value: f64) {
+        self.0 = value;
+
+        if self.is_in_range() == false {
+            self.0 %= Self::MAX;
+        }
+    }
+
+    /// Set the value with a value in degrees
     pub fn set_degrees(&mut self, value: f64) {
-        self.value = value;
+        self.set(value);
     }
 
-    /// Set `value` with a value in radian
+    /// Set the value with a value in radian
     pub fn set_radian(&mut self, value: f64) {
-        self.value = value.to_degrees();
+        self.set(value.to_degrees());
     }
 
-    /// Get `value` with a value in degress
+    /// Get the value with a value in degress
     pub fn degrees(&self) -> f64 {
-        self.value
+        self.0
     }
 
-    /// Get `value` with a value in radian
+    /// Get the value with a value in radian
     pub fn radian(&self) -> f64 {
-        self.value.to_radians()
+        self.0.to_radians()
     }
 }
 
@@ -34,5 +40,17 @@ impl Range<f64> for Angle {
 
     fn is_in_range(&self) -> bool {
         self.degrees() >= Self::MIN && self.degrees() <= Self::MAX
+    }
+}
+
+impl Into<Angle> for f64 {
+    fn into(self) -> Angle {
+        let angle = Angle(self);
+
+        if angle.is_in_range() == false {
+            return Angle(self % Self::MAX);
+        }
+
+        angle
     }
 }
