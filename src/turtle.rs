@@ -8,7 +8,7 @@ use crate::{
     },
     color::Color,
     angle::Angle,
-    position::Distance, models::range_model::Range
+    position::Distance
 };
 
 /// Composing SVG with turtle graphics operations with a cursor

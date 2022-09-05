@@ -1,10 +1,10 @@
-use svg::{node::element::{Path, Rectangle, Line}, Document};
+use svg::{node::element::{Rectangle, Line}, Document};
 
 use crate::{
     color::{Color, ColorSvg},
     size::Size,
     draw::pen::Pen,
-    position::{Distance, Pos}
+    position::{Distance}
 };
 
 /// The drawing contains
