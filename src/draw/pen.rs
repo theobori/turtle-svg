@@ -63,7 +63,7 @@ impl Pen {
             (0.).into(),
             distance
         );
-
+    
         self.position = next_pos;
     }
 

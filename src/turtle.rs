@@ -43,6 +43,10 @@ impl TurtleSvg {
 
     /// Move forward by `distance`
     pub fn forward(&mut self, distance: Distance) {
+        if self.pen.is_down() == false {
+            return
+        }
+
         let mut pen = self.pen;
 
         self.drawing.forward(&mut pen, distance);
@@ -52,6 +56,10 @@ impl TurtleSvg {
 
     /// Move backward by `distance`
     pub fn backward(&mut self, distance: Distance) {
+        if self.pen.is_down() == false {
+            return
+        }
+
         let mut pen = self.pen;
 
         self.drawing.backward(&mut pen, distance);
@@ -69,7 +77,7 @@ impl TurtleSvg {
     /// Turn on the right by `angle`
     pub fn right<A: Into<Angle>>(&mut self, angle: A) {
         let angle = self.pen.angle.degrees() + angle.into().degrees();
-
+        
         self.pen_mut().angle.set_degrees(angle);
     }
 

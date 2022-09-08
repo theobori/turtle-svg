@@ -4,14 +4,27 @@ use crate::{
     color::{Color, ColorSvg},
     size::Size,
     draw::pen::Pen,
-    position::{Distance}
+    position::{Distance, Pos}
 };
+
+struct DrawingLine {
+    color: Color,
+    thickness: f64,
+    x1: f64,
+    y1: f64,
+    x2: f64,
+    y2: f64
+}
+
+/// Drawing position
+pub type DrawingPos = Pos<f64>;
 
 /// The drawing contains
 pub struct Drawing {
     size: Size,
     bg: Color,
-    composer: Vec<Line>,
+    lines: Vec<DrawingLine>,
+    center: DrawingPos
 }
 
 impl Default for Drawing {
@@ -19,7 +32,8 @@ impl Default for Drawing {
         Self {
             size: (800., 600.).into(),
             bg: Color::default(),
-            composer: Vec::new()
+            lines: Vec::new(),
+            center: (0., 0.).into()
         }
     }
 }
@@ -29,31 +43,29 @@ impl Drawing {
         Self::default()
     }
 
-    /// Used to move the pen in a direction
+    /// Move the pen in a direction
     fn go(
         &mut self,
         pen: &mut Pen,
         distance: Distance,
         f: &dyn Fn(&mut Pen, Distance)
     ) {
-        let pen_color: ColorSvg = pen.color.into();
         let (x1, y1) = pen.position.into();
 
         f(pen, distance);
         
         let (x2, y2) = pen.position.into();
-
-        // Create the line with pen informations
-        let line = Line::new()
-            .set("stroke", pen_color)
-            .set("stroke-width", pen.thickness)
-            .set("x1", x1)
-            .set("y1", y1)
-            .set("x2", x2)
-            .set("y2", y2);
-
-        // Add the line into the composer
-        self.composer.push(line);
+        let line = DrawingLine {
+            color: pen.color,
+            thickness: pen.thickness,
+            x1,
+            y1,
+            x2,
+            y2,
+        };
+        
+        // Add the line to the 'history'
+        self.lines.push(line);
     }
 
     /// Move by `distance` forward from `pen` with the same angle
@@ -76,6 +88,11 @@ impl Drawing {
         self.size = size;
     }
 
+    /// Centering the drawing
+    pub fn set_center<P: Into<DrawingPos>>(&mut self, positon: P) {
+        self.center = positon.into();
+    }
+
     /// Parse `self.composer` and write lines into a file at `path`
     pub fn save_svg(&mut self, path: &str) {
         // Background
@@ -92,8 +109,21 @@ impl Drawing {
             .set("viewBox", viewbox)
             .add(background);
 
-        for node in &self.composer {
-            document = document.add(node.clone());
+        // Distance to reach the center
+        let dx = (self.size.w / 2.) - self.center.0;
+        let dy = (self.size.h / 2.) - self.center.1;
+
+        for line in &self.lines {
+            let color: ColorSvg = line.color.into();
+            let node = Line::new()
+                .set("stroke", color)
+                .set("stroke-width", line.thickness)
+                .set("x1", line.x1 + dx)
+                .set("y1", line.y1 + dy)
+                .set("x2", line.x2 + dx)
+                .set("y2", line.y2 + dy);
+
+            document = document.add(node);
         }
 
         // Save the document as a SVG file
