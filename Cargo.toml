@@ -3,6 +3,35 @@ name = "turtle-svg"
 version = "0.1.0"
 edition = "2021"
 
+include = [
+    "src/**",
+    "Cargo.toml",
+    "README.md",
+    "LICENSE"
+]
+
+exclude = [
+    "src/mains.rs"
+]
+
+homepage = "https://github.com/theobori/turtle-svg"
+description = "Turtle graphics, SVG rendering"
+repository = "https://github.com/theobori/turtle-svg"
+
+keywords = [
+    "lib",
+    "turtle",
+    "headless",
+    "svg"
+]
+
+categories = [
+    "rendering::data-formats"
+]
+
+license = "MIT"
+readme = "README.md"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]

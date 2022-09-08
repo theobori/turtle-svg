@@ -84,8 +84,8 @@ impl Drawing {
     }
 
     /// Change the drawing size
-    pub fn set_size(&mut self, size: Size) {
-        self.size = size;
+    pub fn set_size<S: Into<Size>>(&mut self, size: S) {
+        self.size = size.into();
     }
 
     /// Centering the drawing
