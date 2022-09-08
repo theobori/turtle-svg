@@ -125,4 +125,9 @@ impl TurtleSvg {
     pub fn go_to<P: Into<PenPos>>(&mut self, position: P) {
         self.pen_mut().position = position.into();
     }
+
+    /// Return the pen position on the drawing
+    pub fn position(&mut self) -> PenPos {
+        self.pen.position
+    }
 }
