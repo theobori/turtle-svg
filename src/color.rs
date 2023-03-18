@@ -56,6 +56,14 @@ impl From<(u8, u8, u8, u8)> for Color {
     }
 }
 
+impl From<(u8, u8, u8)> for Color {
+    fn from(color: (u8, u8, u8)) -> Self {
+        let (r, g, b) = color;
+
+        Self { r, g, b, a: 255 }
+    }
+}
+
 impl Into<ColorSvg> for Color {
     fn into(self) -> ColorSvg {
         let alpha = (self.a / 255) as f64;
